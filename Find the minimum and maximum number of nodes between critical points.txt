@@ -1,0 +1,55 @@
+Problem Link - https://leetcode.com/problems/find-the-minimum-and-maximum-number-of-nodes-between-critical-points/description/?envType=daily-question&envId=2024-07-05
+
+Problem - A critical point in a linked list is defined as either a local maxima or a local minima. A node is a local maxima if the current node has a value 
+strictly greater than the previous node and the next node. A node is a local minima if the current node has a value strictly smaller than the previous node 
+and the next node. Note that a node can only be a local maxima/minima if there exists both a previous node and a next node. Given a linked list head, return 
+an array of length 2 containing [minDistance, maxDistance] where minDistance is the minimum distance between any two distinct critical points and maxDistance 
+is the maximum distance between any two distinct critical points. If there are fewer than two critical points, return [-1, -1].
+
+Intuition - 1. Traverse the Linked List:
+Purpose: Identify critical points, which are either local minima or local maxima.
+Details: Iterate through the linked list while maintaining a pointer for the previous node and the current node. This allows comparison between the previous, 
+current, and next node values to determine if the current node is a critical point.
+
+2. Record Positions of Critical Points:
+Purpose: Store the positions (indices) of the critical points for distance calculations.
+Details: As you traverse the list, if a node is determined to be a critical point, store its position in an array or list.
+
+3. Calculate Distance
+Purpose: Determine the minimum and maximum distances between the identified critical points.
+Details:
+If fewer than two critical points are identified, return [-1, -1] immediately.
+Otherwise, compute the minimum distance between consecutive critical points and the maximum distance between the first and last critical points in the list.
+
+4. Return the Results:
+Purpose: Provide the final result in the required format.
+Details: Return an array containing the minimum and maximum distances.
+
+class Solution {
+    public int[] nodesBetweenCriticalPoints(ListNode head) {
+        if (head==null || head.next==null || head.next.next==null) {
+            return new int[]{-1, -1};
+        }
+        List<Integer> criticalPoints=new ArrayList<>();
+        ListNode prev=head;
+        ListNode curr=head.next;
+        int position=1;
+        while (curr.next!=null) {
+            if ((curr.val>prev.val&&curr.val>curr.next.val) || (curr.val<prev.val&&curr.val<curr.next.val)) {
+                criticalPoints.add(position);
+            }
+            prev=curr;
+            curr=curr.next;
+            position++;
+        }
+        if (criticalPoints.size()<2) {
+            return new int[]{-1, -1};
+        }
+        int minD=Integer.MAX_VALUE;
+        int maxD=criticalPoints.get(criticalPoints.size()-1)-criticalPoints.get(0);
+        for (int i=1;i<criticalPoints.size();i++) {
+            minD=Math.min(minD, criticalPoints.get(i)-criticalPoints.get(i-1));
+        }
+        return new int[]{minD, maxD};
+    }
+}

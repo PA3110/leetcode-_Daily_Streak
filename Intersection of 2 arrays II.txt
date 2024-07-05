@@ -1,0 +1,44 @@
+Problem Link - https://leetcode.com/problems/intersection-of-two-arrays-ii/?envType=daily-question&envId=2024-07-02
+
+Problem - Given two integer arrays nums1 and nums2, return an array of their intersection. Each element in the result must appear as many times as it shows in both 
+arrays and you may return the result in any order.
+
+Intuition - To find the intersection of two arrays where each element in the result must appear as many times as it shows in both arrays, we can take advantage of 
+sorting and two-pointer techniques. Sorting helps in efficiently finding common elements by scanning through both arrays in a linear fashion. Using two pointers, one 
+for each array, allows us to traverse both arrays and find common elements without having to repeatedly search through the arrays.
+
+Approach - 
+1.Sort Both Arrays: Sorting helps in comparing elements of both arrays efficiently. By sorting both arrays, we can then use a two-pointer approach to find common elements.
+
+2.Initialize Pointers: Use two pointers i and j to traverse through nums1 and nums2 respectively. Also, use a pointer k to keep track of the position in nums1 where 
+we store the result.
+
+Traverse Both Arrays:
+
+3.Compare the elements at the current positions of both pointers.
+If the element in nums1 is less than the element in nums2, increment pointer i.
+If the element in nums1 is greater than the element in nums2, increment pointer j.
+If the elements are equal, it means we have found a common element. Store this element in nums1[k], increment i, j, and k.
+
+4.Return the Result: The result is stored in the first k positions of nums1. Use Arrays.copyOfRange to return this part of the array.
+
+class Solution {
+    public int[] intersect(int[] nums1, int[] nums2) {
+        int l1=nums1.length;
+        int l2=nums2.length;
+        int i=0,j=0,k=0;
+        Arrays.sort(nums1);
+        Arrays.sort(nums2);
+        while (i<l1 && j<l2) {
+            if (nums1[i]<nums2[j]) {
+                i++;
+            } else if (nums1[i]>nums2[j]) {
+                j++;
+            } else {
+                nums1[k++]=nums1[i++];
+                j++;
+            }
+        }
+        return Arrays.copyOfRange(nums1, 0, k);
+    }
+}
