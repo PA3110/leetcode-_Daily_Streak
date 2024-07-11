@@ -1,0 +1,35 @@
+Problem Link - https://leetcode.com/problems/merge-nodes-in-between-zeros/?envType=daily-question&envId=2024-07-04
+
+Problem - You are given the head of a linked list, which contains a series of integers separated by 0's. The beginning and end of the linked list will 
+have Node.val == 0. For every two consecutive 0's, merge all the nodes lying in between them into a single node whose value is the sum of all the merged 
+nodes. The modified list should not contain any 0's. Return the head of the modified linked list.
+
+Intuition - Firstly, make another empty list then one pointer will traverse and if the val is not equal to 0 add it to the sum, then when val equal 0 reset 
+the sum to 0 and before reseting the sum update the sum val which is a non zero no to the new list .
+
+class Solution {
+    public ListNode mergeNodes(ListNode head) {
+        ListNode dummy = new ListNode(0); // Dummy node to simplify list construction
+        ListNode currentNew = dummy; // Pointer to construct new list
+        ListNode currentOld = head.next; // Start from the node after the initial zero
+
+        int sum = 0;
+        
+        while (currentOld != null) {
+            if (currentOld.val == 0) {
+                // When we hit a zero, we need to create a new node with the sum if sum is non-zero
+                if (sum != 0) {
+                    currentNew.next = new ListNode(sum);
+                    currentNew = currentNew.next;
+                    sum = 0; // Reset sum for the next segment
+                }
+            } else {
+                // Accumulate the sum of values between zeros
+                sum += currentOld.val;
+            }
+            currentOld = currentOld.next;
+        }
+
+        return dummy.next; // The first node in the dummy list is the start of the result list
+    }
+}
