@@ -1,0 +1,61 @@
+Problem Link - https://leetcode.com/problems/maximum-score-from-removing-substrings/description/?envType=daily-question&envId=2024-07-12
+
+Problem - You are given a string s and two integers x and y. You can perform two types of operations any number of times.
+
+1.Remove substring "ab" and gain x points.
+   a.For example, when removing "ab" from "cabxbae" it becomes "cxbae".
+2.Remove substring "ba" and gain y points.
+   b.For example, when removing "ba" from "cabxbae" it becomes "cabxe".
+Return the maximum points you can gain after applying the above operations on s.
+
+Intuition - To maximize the points we can gain from removing the substrings "ab" and "ba", we need to consider the given points x for "ab" and y for "ba". The optimal strategy 
+is to prioritize the removal of the substring which yields the higher points first. This ensures that we maximize the points gained at each step.
+
+Approach - 
+1.Initialization:
+   a.Initialize counters aCount and bCount to zero to keep track of the counts of 'a' and 'b' in the substring under consideration.
+   b.Determine which operation to prioritize based on the higher point value (x or y).
+
+2.Iterate Through the String:
+   a.Traverse through each character in the string s.
+   b.If the current character is neither 'a' nor 'b', calculate the possible points gained from the counts of 'a' and 'b' seen so far and reset the counters.
+   c.If the current character is 'a' or 'b':
+       - Depending on whether x (points for "ab") is greater than y (points for "ba"), either prioritize reducing the count of 'b' when 'a' is encountered (for "ba") or reduce the count 
+         of 'a' when 'b' is encountered (for "ab").
+   d.Update the result with the corresponding points and adjust the counters accordingly.
+
+3.Final Calculation:
+After the loop, there might still be some 'a' and 'b' left which could be paired to form either "ab" or "ba". Add these remaining points to the result.
+
+class Solution {
+    public int maximumGain(String s, int x, int y) {
+        int aCnt=0;
+        int bCnt=0;
+        int lesser=Math.min(x, y);
+        int res=0;
+        for (int i=0;i<s.length();i++) {
+            char c=s.charAt(i);
+            if (c>'b') {
+                res+=Math.min(aCnt, bCnt)*lesser;
+                aCnt=0;
+                bCnt=0;
+            } else if (c=='a') {
+                if (x<y && bCnt>0) {
+                    bCnt--;
+                    res+=y;
+                } else {
+                    aCnt++;
+                }
+            } else {
+                if (x>y && aCnt>0) {
+                    aCnt--;
+                    res+=x;
+                } else {
+                    bCnt++;
+                }
+            }
+        }
+        res+=Math.min(aCnt, bCnt)*lesser;
+        return res;
+    }
+}
