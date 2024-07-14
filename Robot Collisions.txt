@@ -1,0 +1,83 @@
+Problem link - https://leetcode.com/problems/robot-collisions/description/?envType=daily-question&envId=2024-07-13
+
+Problem - There are n 1-indexed robots, each having a position on a line, health, and movement direction.
+You are given 0-indexed integer arrays positions, healths, and a string directions (directions[i] is either 'L' for left or 'R' for right). All integers in positions are unique.
+All robots start moving on the line simultaneously at the same speed in their given directions. If two robots ever share the same position while moving, they will collide.
+If two robots collide, the robot with lower health is removed from the line, and the health of the other robot decreases by one. The surviving robot continues in the same direction 
+it was going. If both robots have the same health, they are both removed from the line.
+Your task is to determine the health of the robots that survive the collisions, in the same order that the robots were given, i.e. final heath of robot 1 (if survived), final 
+health of robot 2 (if survived), and so on. If there are no survivors, return an empty array.
+Return an array containing the health of the remaining robots (in the order they were given in the input), after no further collisions can occur. Note: The positions may be unsorted.
+
+Intuition - This is very similar to Asteroid Collision Problem.
+
+Approach - 
+1.First sort the robots based on their positions
+2.Now, use the stack to determine if pushed robot has direction R and current processing robot has direction L.
+   a.If Yes: (Pop the Stacked Robot and determine who would be serviving or both gets destroyed is same health)
+   b.Else keep pushing the robots in the stack
+3.Finally, we need to sort serviving robots by their original index
+4.And populate each ones health as a result.
+
+class Solution {
+    public List<Integer> survivedRobotsHealths(int[] positions, int[] healths, String directions) {
+        int N = positions.length;
+        Robot[] robots = new Robot[N];
+        for(int i=0;i<N;i++) {
+            robots[i] = new Robot(i + 1, healths[i], positions[i], directions.charAt(i));
+        }
+
+        /// Sort the Robots based on their Positions (Comparable Implemented Already)
+        Arrays.sort(robots);
+        Stack<Robot> stack = new Stack<>();
+        
+        for(int i=0;i<N;i++) {
+            Robot currRobot = robots[i];
+            /// Now, determine the collision based on "R" <--> "L" direction
+            while(!stack.isEmpty() && currRobot != null && stack.peek().dir == 'R' && currRobot.dir == 'L') {
+                Robot poppedRobot = stack.pop();
+                /// Both robots with same health get destroyed /// Null check required while pushing in Stack
+                if(currRobot.health == poppedRobot.health) currRobot = null;
+                else {
+                    currRobot = (currRobot.health > poppedRobot.health) ? currRobot : poppedRobot;
+                    /// Serviving Robot reduces health by 1
+                    currRobot.health--;
+                }
+            }
+            /// Do not push if current robot got destroyed in collision
+            if(currRobot != null) stack.push(currRobot);
+        }
+
+        
+        List<Robot> servivedRobots = new ArrayList<>(stack);
+        /// Now, sort these robots by their original index
+        Collections.sort(servivedRobots, (a, b) -> (a.index - b.index));
+
+        List<Integer> res = new ArrayList<>();
+        /// Add the health of finally servived Robots
+        for(Robot r: servivedRobots) res.add(r.health);
+        return res;
+    }
+}
+
+class Robot implements Comparable<Robot> {
+    int index, health, position;
+    char dir;
+
+    public Robot(int id, int h, int p, char d) {
+        this.index = id;
+        this.health = h;
+        this.position = p;
+        this.dir = d;
+    }
+
+    // public String toString() {
+    //     return "Robot { index =" + this.index + ", health=" + this.health + ",pos=" + this.position + "," + "}";
+    // }
+
+    @Override
+    public int compareTo(Robot other) {
+        return Integer.compare(this.position, other.position);
+    }
+
+}
