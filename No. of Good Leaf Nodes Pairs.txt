@@ -1,0 +1,59 @@
+Problem Link - https://leetcode.com/problems/number-of-good-leaf-nodes-pairs/solutions/1372128/java-dfs-solution-with-explanation/?envType=daily-question&envId=2024-07-18
+
+Problem - You are given the root of a binary tree and an integer distance. A pair of two different leaf nodes of a binary tree is said to be good if the length of the shortest 
+path between them is less than or equal to distance.
+Return the number of good leaf node pairs in the tree.
+
+Intuition - 
+1.To calculate the number of good leaf nodes. You need to traverse the left subtree and right subtree of a particular node.
+2.While traversing the left or right subtree of a particular node you can return an Arraylist of the distance of the leaf nodes from that particular parent node.
+3.When you have the ArrayList of distance from both left and right subtree you can brute force to check pairs that fulfil the given condition and increment the global count.
+4.After you are done with the given brute force you also need to increment every distance by one for the next parent node and then return the new list.
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    int cnt=0;
+    public int countPairs(TreeNode root, int distance) {
+        Distance(root,distance);
+            return cnt;
+    }
+    public List<Integer> Distance(TreeNode root,int distance){
+        if(root==null)
+            return new ArrayList<Integer>();
+        if(root.left==null&&root.right==null){
+            List<Integer> sublist=new ArrayList<Integer>();
+            sublist.add(1);
+            return sublist;
+        }
+        List<Integer> l1=Distance(root.left,distance);
+        List<Integer> l2=Distance(root.right,distance);
+        //System.out.println("left "+l1);
+        //System.out.println("right "+l2);
+        for(int d1:l1){
+            for(int d2:l2){
+                if(d1+d2<=distance)
+                    cnt++;
+            }
+        }
+        List<Integer> list=new ArrayList<Integer>();
+        for(int val:l1)
+            list.add(val+1);
+        for(int val:l2)
+            list.add(val+1);
+        return list;
+    }
+}

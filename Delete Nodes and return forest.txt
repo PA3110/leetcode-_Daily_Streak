@@ -1,0 +1,49 @@
+Problem Link - https://leetcode.com/problems/delete-nodes-and-return-forest/description/?envType=daily-question&envId=2024-07-17
+
+Problem - Given the root of a binary tree, each node in the tree has a distinct value.
+After deleting all nodes with a value in to_delete, we are left with a forest (a disjoint union of trees).
+Return the roots of the trees in the remaining forest. You may return the result in any order.
+
+Intuition - We can perform a Depth-First Search on the tree while also using a Hashset to optimize looking up node values in to_delete.
+
+1.Recursively perform a Postorder Traversal on root. flag indicates whether the current node is a root of a tree in the forest. In each call we set flag to be true if the 
+previous node was to be deleted (making the current node a root if it's not to be deleted).
+2.After the recursive calls, if the current node is not in to_delete, but flag is true, then this is the root of one of the new trees and can be added to res. Moreover, 
+if the current node needs to be deleted, set its value to null.
+3.Before starting the DFS, add all the elements of to_delete to a Hashset to improve the lookup time for node values. Furthermore, we initially have flag = true for the 
+first call to indicate that the root is a potential root of a tree in the forest.
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    private boolean[] set=new boolean[1001];
+    private List<TreeNode> res;
+    private TreeNode dfs(TreeNode root, boolean flag) {
+        if (root==null) return root;
+        root.left=dfs(root.left, set[root.val]);
+        root.right=dfs(root.right, set[root.val]);
+        if (!set[root.val] && flag) res.add(root);
+        return set[root.val]?null:root;
+    }
+    public List<TreeNode> delNodes(TreeNode root, int[] to_delete) {
+        res=new ArrayList<>();
+        for (int n:to_delete) {
+            set[n]=true;
+        }
+        dfs(root, true);
+        return res;
+    }
+}
