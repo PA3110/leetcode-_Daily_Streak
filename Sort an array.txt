@@ -1,0 +1,26 @@
+Problem Link -https://leetcode.com/problems/sort-an-array/description/
+
+Problem - Given an array of integers nums, sort the array in ascending order and return it.
+You must solve the problem without using any built-in functions in O(nlog(n)) time complexity and with the smallest space complexity possible.
+
+Intuition - 
+
+Approach - 
+The main function sortArray contains a nested function quick_sort, which is a common pattern to encapsulate the recursive logic within the sorting function and 
+allows us to use variables from the outer scope. quick_sort takes two arguments, l and r, which are the indices of the left and right boundaries of the sub-array 
+that it needs to sort. The termination condition for the recursion is when the left boundary l is greater than or equal to the right boundary r. At this point, 
+the sub-array has zero or one element and is considered sorted. A pivot element x is chosen using randint(l, r) to randomly select an index between l and r, 
+inclusive. The random pivot mitigates the risk of encountering the worst-case time complexity. Three pointers are established: i is initially set to one less 
+than the left boundary l, j is one more than the right boundary r, and k is set to the left boundary l. An iterative process starts where the k pointer moves 
+from l to j. During this process:
+If the current element nums[k] is less than the pivot x, it is swapped with the element at i+1, and both i and k are incremented. This effectively moves the 
+current element to the left partition (elements less than the pivot).
+If nums[k] is greater than the pivot x, the current element is swapped with the element just before j, and j is decreased. This moves the current element to the 
+right partition (elements greater than the pivot).
+If nums[k] is equal to the pivot x, only k is incremented since the element at k is already equal to the pivot, and we want to keep this partition in the middle.
+The array now has three partitions: elements less than the pivot (l to i), elements equal to the pivot (i+1 to j-1), and elements greater than the pivot (j to r). 
+The elements equal to the pivot are already at their final destination.
+Recursive calls are made to quick_sort for the left partition (l to i) and the right partition (j to r). Note that the elements equal to the pivot are not included.
+Once all recursive calls are completed, the entire array has been sorted in place, and the sorted array nums is returned.
+Data Structures Used:
+The primary data structure is the input array nums. No additional data structure is utilized, which contributes to the algorithm's small space complexity.

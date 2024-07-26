@@ -1,0 +1,34 @@
+Problem Link - https://leetcode.com/problems/sort-the-people/submissions/1329014122/?envType=daily-question&envId=2024-07-22
+
+Problem - You are given an array of strings names, and an array heights that consists of distinct positive integers. Both arrays are of length n.
+For each index i, names[i] and heights[i] denote the name and height of the ith person. Return names sorted in descending order by the people's heights.
+
+Intuition - The problem requires sorting a list of names based on their corresponding heights in descending order. The key insight here is to use a mapping between heights and names to facilitate easy retrieval of names after sorting the heights. By sorting the heights first and then using the mapping, we can efficiently construct the final sorted list of names.
+
+Approach - 
+1.Mapping Heights to Names:
+Create an unordered map (hash map) that associates each height with its corresponding name. This allows for O(1) average time complexity for lookups.
+2.Sorting Heights:
+Sort the heights in ascending order using the built-in sort function. This step has a time complexity of O(n log n).
+3.Constructing the Result:
+Initialize an empty vector to hold the sorted names.
+Iterate through the sorted list of heights in reverse order (to achieve descending order) and use the height-to-name mapping to populate the result vector.
+4.Return the Result:
+Finally, return the vector containing names sorted by height in descending order.
+
+class Solution {
+    public String[] sortPeople(String[] names, int[] heights) {
+        Map<Integer, String> map = new HashMap<>();
+        for (int i = 0; i < names.length; i++) {
+            map.put(heights[i], names[i]);
+        }        
+        Arrays.sort(heights);
+        String[] result = new String[heights.length];
+        int index = 0;
+        for (int i = heights.length - 1; i >= 0; i--) {
+            result[index] = map.get(heights[i]);
+            index++;
+        }
+        return result;
+    }
+}

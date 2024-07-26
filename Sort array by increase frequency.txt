@@ -1,0 +1,29 @@
+Problem Link - https://leetcode.com/problems/sort-array-by-increasing-frequency/description/?envType=daily-question&envId=2024-07-23
+
+Problem - Given an array of integers nums, sort the array in increasing order based on the frequency of the values. If multiple values have the same frequency, 
+sort them in decreasing order. Return the sorted array.
+
+Intuition - The intuition behind this solution is to sort the numbers based on their frequency in ascending order, and if two numbers have the same frequency, 
+sort them in descending order based on their values.
+
+Approach - 
+1.Create an unordered_map called frequencyMap to store the frequency of each number in the input vector nums.
+2.Iterate through the nums vector and update the frequency of each number in the frequencyMap.
+3.Sort the nums vector using the sort function with a custom lambda function as the comparator.
+   a.The lambda function compares two numbers based on their frequency first.
+   b.If the frequencies are different, it returns true if the frequency of the first number is less than the frequency of the second number (ascending frequency order).
+   c.If the frequencies are the same, it compares the values of the two numbers in descending order.
+4.Return the sorted nums vector.
+
+class Solution {
+    public int[] frequencySort(int[] nums) {
+        Map<Integer, Integer> res = new HashMap<>();
+	
+	Arrays.stream(nums).forEach(n -> res.put(n, res.getOrDefault(n, 0) + 1));
+	
+	return Arrays.stream(nums).boxed()
+			.sorted((a,b) -> res.get(a) != res.get(b) ? res.get(a) - res.get(b) : b - a)
+			.mapToInt(n -> n)
+			.toArray();
+    }
+}

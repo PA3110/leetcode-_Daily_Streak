@@ -1,0 +1,87 @@
+Problem Link - https://leetcode.com/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/submissions/1333604828/?envType=daily-question&envId=2024-07-26
+
+Problem - There are n cities numbered from 0 to n-1. Given the array edges where edges[i] = [fromi, toi, weighti] represents a bidirectional and weighted edge 
+between cities fromi and toi, and given the integer distanceThreshold. Return the city with the smallest number of cities that are reachable through some path 
+and whose distance is at most distanceThreshold, If there are multiple such cities, return the city with the greatest number. Notice that the distance of a path 
+connecting cities i and j is equal to the sum of the edges' weights along that path.
+
+Intuition - The problem asks for a city with the smallest number of neighbors within a given distance threshold. This can be solved by constructing a distance 
+matrix, then using the Floyd-Warshall algorithm to compute shortest paths between every pair of nodes. By analyzing this distance matrix, you can determine the 
+number of neighbors each city has within the specified distance threshold and return the city with the smallest number of neighbors.
+
+Approach - 
+Initialize the Matrix:
+Create a 2D matrix matrix of size n x n to represent the distances between cities.
+Set diagonal elements to 0 as they represent the distance from a city to itself.
+Initialize all other elements to a large value (using Long.MAX_VALUE / 2) to represent "infinity" (i.e., no direct connection).
+Populate the Matrix with Edges:
+Given the edges, update the matrix with the cost for each connection between cities.
+Floyd-Warshall Algorithm:
+Apply the Floyd-Warshall algorithm to compute the shortest paths between all pairs of cities.
+This algorithm iterates through each pair of nodes and determines if using an intermediate node results in a shorter path.
+Find the City with Fewest Neighbors:
+For each city, count the number of neighbors within the specified distance threshold.
+The city with the smallest number of such neighbors is the desired answer.
+If there are ties, return the city with the highest index (the latest one).
+
+Time Complexity: The Floyd-Warshall algorithm runs in O(n^3), where n is the number of cities. The counting loop to determine neighbors adds an additional O(n^2). 
+Overall, the time complexity is O(n^3).
+Space Complexity: The adjacency matrix matrix is of size n x n, resulting in a space complexity of O(n^2)
+
+class Solution {
+    public int findTheCity(int n, int[][] edges, int distanceThreshold) {
+        long[][] matrix = new long[n][n];
+        
+        // Initialize the matrix
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == j) {
+                    matrix[i][j] = 0L; // Distance from a city to itself is zero
+                } else {
+                    matrix[i][j] = Long.MAX_VALUE / 2; // Large value representing no direct connection
+                }
+            }
+        }
+
+        // Populate the matrix with edge values
+        for (int[] edge : edges) {
+            int a = edge[0];
+            int b = edge[1];
+            int cost = edge[2];
+            matrix[a][b] = cost;
+            matrix[b][a] = cost;
+        }
+
+        // Apply Floyd-Warshall algorithm to compute shortest paths
+        for (int k = 0; k < n; k++) {
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    long newCost = matrix[i][k] + matrix[k][j];
+                    if (newCost < matrix[i][j]) {
+                        matrix[i][j] = newCost;
+                    }
+                }
+            }
+        }
+
+        // Determine the city with the fewest neighbors within the threshold
+        int station = -1;
+        int minNeighbors = Integer.MAX_VALUE;
+        
+        for (int i = 0; i < n; i++) {
+            int count = 0;
+            for (int j = 0; j < n; j++) {
+                if (matrix[i][j] <= distanceThreshold) {
+                    count++;
+                }
+            }
+
+            if (count <= minNeighbors) { // If tied, return the city with the higher index
+                minNeighbors = count;
+                station = i;
+            }
+        }
+
+        return station;
+    }
+}
