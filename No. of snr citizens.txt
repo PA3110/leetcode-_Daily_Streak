@@ -1,0 +1,36 @@
+Problem Link - https://leetcode.com/problems/number-of-senior-citizens/description/
+
+Problem - You are given a 0-indexed array of strings details. Each element of details provides information about a given passenger compressed into a string of length 15. 
+The system is such that:
+a.The first ten characters consist of the phone number of passengers.
+b.The next character denotes the gender of the person.
+c.The following two characters are used to indicate the age of the person.
+d.The last two characters determine the seat allotted to that person.
+Return the number of passengers who are strictly more than 60 years old.
+
+Intuition - The problem requires counting the number of passengers who are over 60 years old. The key insight is that we don't need to convert the entire age to an integer; 
+we can simply compare the characters representing the age digits. This allows for a more efficient solution without the need for string-to-integer conversion.
+
+Approach - 
+1.Initialize a counter seniorCount to keep track of passengers over 60.
+2.Iterate through each passenger's details in the input array.
+3.For each passenger, extract the tens and ones digits of their age (located at indices 11 and 12 in the string).
+4.Compare these digits to determine if the age is over 60:
+   a.If the tens digit is greater than '6', the person is over 60.
+   b.If the tens digit is '6', check if the ones digit is greater than '0'.
+5.If either condition is true, increment the seniorCount.
+6.Return the final count of seniors.
+
+class Solution {
+    public int countSeniors(String[] details) {
+        int seniorCount = 0;
+        for (String info : details) {
+            char tens = info.charAt(11);
+            char ones = info.charAt(12);
+            if (tens > '6' || (tens == '6' && ones > '0')) {
+                seniorCount++;
+            }
+        }
+        return seniorCount;
+    }
+}
