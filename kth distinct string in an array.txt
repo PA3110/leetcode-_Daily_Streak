@@ -1,0 +1,38 @@
+Problem Link - https://leetcode.com/problems/kth-distinct-string-in-an-array/description/
+
+Problem - A distinct string is a string that is present only once in an array.
+Given an array of strings arr, and an integer k, return the kth distinct string present in arr. If there are fewer than k distinct strings, return an empty string "".
+Note that the strings are considered in the order in which they appear in the array.
+
+Intuition - 
+1.Frequencies Counting:
+Each of the provided solutions begins by going through the input array to count the occurrence frequency for each string. It is realized by a dictionary-like data 
+structure, where the string itself is used as the key and its count of occurrences as the value. The structures in use here are Python's Counter class, Java's HashMap, 
+and C++'s unordered_map.
+
+2.Finding the k-th Distinct String:
+After the frequency map has been built, each solution iterates over the array again. In this iteration, it checks whether the current string has appeared once, hence 
+it's distinct.
+If a distinct string is found then the counter k is decreased by 1.
+When k reaches 0, the current string is the k-th distinct string and is returned.
+
+3.Return Result :
+If after iteration, it doesn't find the k-th distinct string, it will return an empty string.
+
+class Solution {
+    public String kthDistinct(String[] arr, int k) {
+        Map<String, Integer> counter = new HashMap<>();
+        for (String v : arr) {
+            counter.put(v, counter.getOrDefault(v, 0) + 1);
+        }
+        for (String v : arr) {
+            if (counter.get(v) == 1) {
+                --k;
+                if (k == 0) {
+                    return v;
+                }
+            }
+        }
+        return "";
+    }
+}

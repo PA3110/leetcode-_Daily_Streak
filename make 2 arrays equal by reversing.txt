@@ -1,0 +1,24 @@
+Problem Link - https://leetcode.com/problems/make-two-arrays-equal-by-reversing-subarrays/description/
+
+Problem - You are given two integer arrays of equal length target and arr. In one step, you can select any non-empty subarray of arr and reverse it. You are allowed to 
+make any number of steps. Return true if you can make arr equal to target or false otherwise.
+
+Intuition - 
+1.Element Frequencies: Arrays with the same elements and the same element frequencies can always be rearranged to look like each other. Example: [1, 2, 3] and [3, 2, 1] 
+  are considered the same with respect to element frequencies.
+2.Counting Elements: The solution to the problem is provided by counting the frequency of every element in both arrays and then comparing these counts.
+3.Direct Comparison:- In this, the frequency counts would be directly compared, which avoids the overhead of sorting the arrays.
+
+class Solution {
+    public boolean canBeEqual(int[] target, int[] arr) {
+        int[] cnt1 = new int[1001];
+        int[] cnt2 = new int[1001];
+        for (int v : target) {
+            ++cnt1[v];
+        }
+        for (int v : arr) {
+            ++cnt2[v];
+        }
+        return Arrays.equals(cnt1, cnt2);
+    }
+}
