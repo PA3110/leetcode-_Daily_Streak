@@ -1,0 +1,37 @@
+Problem Link - https://leetcode.com/problems/minimum-number-of-pushes-to-type-word-ii/description/
+
+Problem - You are given a string word containing lowercase English letters. Telephone keypads have keys mapped with distinct collections of lowercase English letters, which can be 
+used to form words by pushing them. For example, the key 2 is mapped with ["a","b","c"], we need to push the key one time to type "a", two times to type "b", and three times to type 
+"c". It is allowed to remap the keys numbered 2 to 9 to distinct collections of letters. The keys can be remapped to any amount of letters, but each letter must be mapped to exactly 
+one key. You need to find the minimum number of times the keys will be pushed to type the string word. Return the minimum number of pushes needed to type word after remapping the 
+keys. An example mapping of letters to keys on a telephone keypad is given below. Note that 1, *, #, and 0 do not map to any letters.
+
+Intuition - 
+1.Count Character Frequencies:
+First, you need to count how many times each character appears in the given string. This is achieved using a frequency counter, which stores the count of each character.
+
+2.Sort the Frequencies:
+The frequencies are then sorted in descending order. This helps in processing the most frequent characters first.
+
+3.Calculate the Minimum Pushes:
+The idea is to distribute the frequencies into "groups" of 8 characters each.
+For each group, the "push" count is calculated as follows:
+Characters in the first group (0 to 7) contribute 1 * frequency pushes.
+Characters in the second group (8 to 15) contribute 2 * frequency pushes.And so on.
+
+4.The logic behind this is that the first group of 8 characters can be handled in one push each, the next group in two pushes each, and so on. This pattern ensures that the most frequent characters are given priority with fewer pushes, while less frequent characters may require more pushes due to their grouping.
+
+class Solution {
+    public int minimumPushes(String word) {
+        int[] cnt = new int[26];
+        for (int i = 0; i < word.length(); ++i) {
+            ++cnt[word.charAt(i) - 'a'];
+        }
+        Arrays.sort(cnt);
+        int ans = 0;
+        for (int i = 0; i < 26; ++i) {
+            ans += (i / 8 + 1) * cnt[26 - i - 1];
+        }
+        return ans;
+    }
+}
